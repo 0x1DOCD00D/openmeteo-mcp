@@ -1,0 +1,15 @@
+ThisBuild / scalaVersion := "3.8.3"
+
+ThisBuild / version := "0.1.0"
+ThisBuild / organization := "Lone Star Consulting"
+
+lazy val root = (project in file("."))
+  .settings(
+    name := "openmeteo-mcp",
+
+    libraryDependencies += "com.lihaoyi" %% "ujson" % "4.4.3",
+
+    Compile / mainClass := Some("OpenMeteoMcpServer"),
+    assembly / mainClass := Some("OpenMeteoMcpServer"),
+    assembly / assemblyJarName := "openmeteo-mcp.jar"
+  )
