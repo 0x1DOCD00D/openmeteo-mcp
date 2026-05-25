@@ -1,6 +1,6 @@
 # OpenMeteo MCP Server in Scala 3
 
-A local Model Context Protocol server written in Scala 3. It exposes selected Open-Meteo web API operations as MCP tools that can be used by Claude Desktop, Claude Code, or another MCP-compatible client.
+A local Model Context Protocol server written in Scala 3 exposes selected Open-Meteo web API operations as MCP tools that can be used by Claude Desktop, Claude Code, or another MCP-compatible client.
 
 The project demonstrates how an external web microservice can be wrapped as a typed MCP server. Claude does not inspect the Scala JAR, does not reflect on Scala methods, and does not call Scala functions directly. Claude discovers named MCP tools through the MCP protocol, decides which tool to invoke from the tool names, descriptions, schemas, and user request, and then sends a JSON-RPC `tools/call` request. The Scala server maps that tool name to a Scala handler function.
 
@@ -21,8 +21,8 @@ The project demonstrates how an external web microservice can be wrapped as a ty
 
 This project uses [Open-Meteo](https://open-meteo.com/). Open-Meteo provides weather APIs over HTTP GET with JSON responses. The example server uses the following components.
 
-- Open-Meteo Geocoding API
-- Open-Meteo Forecast API with current weather variables
+- Open-Meteo Geocoding API;
+- Open-Meteo Forecast API with current weather variables.
 
 The default implementation exposes two tools.
 
@@ -31,7 +31,7 @@ The default implementation exposes two tools.
 
 Open-Meteo free API usage is subject to Open-Meteo terms. At the time this README was written, the free API is intended for non-commercial use, has rate limits, and the data is provided under the CC BY 4.0 data license. Check the current Open-Meteo terms before publishing or deploying this project.
 
-Useful links:
+Useful links include the following.
 
 - Open-Meteo home: https://open-meteo.com/
 - Open-Meteo terms: https://open-meteo.com/en/terms
@@ -41,7 +41,7 @@ Useful links:
 
 ## MCP background
 
-Model Context Protocol (MCP) server exposes capabilities to an MCP client. For this project, the important capability is `tools`. The MCP flow is the following.
+_Model Context Protocol (MCP)_ server exposes capabilities to an MCP client. For this project, the important capability is `tools`. The MCP flow is the following.
 ```text
 Claude Desktop or Claude Code
   starts the JAR as a subprocess
@@ -76,7 +76,7 @@ OpenMeteoMcpServer.scala
 Open-Meteo APIs
 ```
 
-The critical mapping is:
+The critical mapping is the following.
 
 ```text
 MCP tool name: geocode_city
@@ -88,7 +88,7 @@ MCP tool name: get_current_weather
   -> Scala handler function getCurrentWeather
 ```
 
-Claude sees this:
+Claude sees the following information:
 
 ```text
 tool name
@@ -99,7 +99,7 @@ output schema
 server instructions
 ```
 
-Claude does not see this:
+and Claude does not see this information:
 
 ```text
 Scala source code
@@ -110,7 +110,7 @@ JAR bytecode internals
 
 ## Repository structure
 
-Recommended layout:
+The layout for the project is the following.
 
 ```text
 openmeteo-mcp/
@@ -123,8 +123,7 @@ openmeteo-mcp/
   src/
     main/
       scala/
-        example/
-          OpenMeteoMcpServer.scala
+        OpenMeteoMcpServer.scala
 ```
 
 Optional future layout:
@@ -134,7 +133,6 @@ openmeteo-mcp/
   src/
     main/
       scala/
-        example/
           mcp/
             JsonRpc.scala
             ToolDef.scala
@@ -145,8 +143,7 @@ openmeteo-mcp/
           OpenMeteoMcpServer.scala
     test/
       scala/
-        example/
-          OpenMeteoMcpServerSpec.scala
+         OpenMeteoMcpServerSpec.scala
 ```
 
 The current project keeps everything in one file for clarity. That is useful for teaching and for understanding the protocol. For a larger project, split protocol handling, HTTP client logic, tool definitions, and tests.
@@ -184,7 +181,7 @@ addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "2.3.1")
 ```scala
 ThisBuild / scalaVersion := "3.8.3"
 ThisBuild / version := "0.1.0"
-ThisBuild / organization := "example"
+ThisBuild / organization := "Lone Star Consulting, Inc."
 
 lazy val root = (project in file("."))
   .settings(
@@ -192,8 +189,8 @@ lazy val root = (project in file("."))
 
     libraryDependencies += "com.lihaoyi" %% "ujson" % "4.4.3",
 
-    Compile / mainClass := Some("example.OpenMeteoMcpServer"),
-    assembly / mainClass := Some("example.OpenMeteoMcpServer"),
+    Compile / mainClass := Some("OpenMeteoMcpServer"),
+    assembly / mainClass := Some("OpenMeteoMcpServer"),
     assembly / assemblyJarName := "openmeteo-mcp.jar"
   )
 ```
@@ -265,13 +262,13 @@ get_current_weather
 
 ## Configure Claude Desktop
 
-Claude Desktop on macOS reads local MCP server configuration from:
+Claude Desktop on macOS reads local MCP server configuration from its default configuration file on Mac OS.
 
 ```text
 ~/Library/Application Support/Claude/claude_desktop_config.json
 ```
 
-Example configuration:
+Example configuration is the following.
 
 ```json
 {
@@ -281,7 +278,7 @@ Example configuration:
       "command": "java",
       "args": [
         "-jar",
-        "/Users/drmark/IdeaProjects/openmeteo-mcp/target/scala-3.8.3/openmeteo-mcp.jar"
+        "/Root/path/to/openmeteo-mcp/target/scala-3.8.3/openmeteo-mcp.jar"
       ],
       "env": {}
     }
@@ -315,7 +312,7 @@ If your current config already has a `preferences` object, keep it and add `mcpS
       "command": "java",
       "args": [
         "-jar",
-        "/Users/drmark/IdeaProjects/openmeteo-mcp/target/scala-3.8.3/openmeteo-mcp.jar"
+        "/Root/path/to/openmeteo-mcp/target/scala-3.8.3/openmeteo-mcp.jar"
       ],
       "env": {}
     }
@@ -323,20 +320,20 @@ If your current config already has a `preferences` object, keep it and add `mcpS
 }
 ```
 
-After editing the config, fully quit and restart Claude Desktop:
+After editing the config, fully quit and restart Claude Desktop using the commands below.
 
 ```bash
 osascript -e 'quit app "Claude"'
 open -a Claude
 ```
 
-Then ask Claude Desktop:
+Then ask Claude Desktop the following prompt request.
 
 ```text
 List the tools exposed by the openmeteo-scala MCP server.
 ```
 
-Or:
+Or this one.
 
 ```text
 Use the openmeteo-scala MCP server. Find the current weather in Chicago.
@@ -348,25 +345,27 @@ If Claude says the MCP server is not installed, check that `mcpServers` is prese
 
 Claude Code uses its own MCP configuration. The Claude Code CLI command does not automatically modify the Claude Desktop config file.
 
-Add the local stdio server to Claude Code:
+Add the local stdio server to Claude Code.
 
 ```bash
 claude mcp add-json openmeteo-scala \
 '{"type":"stdio","command":"java","args":["-jar","/Users/drmark/IdeaProjects/openmeteo-mcp/target/scala-3.8.3/openmeteo-mcp.jar"],"env":{}}'
 ```
 
-Verify:
+Verify if the command executed successfully.
 
 ```bash
 claude mcp get openmeteo-scala
 claude mcp list
 ```
 
-Inside Claude Code, use:
+Inside Claude Code, use the command
 
 ```text
 /mcp
 ```
+to obtain available connectors as seen below.
+![img.png](img.png)
 
 If you want a project-scoped configuration for GitHub publishing, use a `.mcp.json` file at the project root. Example:
 
@@ -389,28 +388,123 @@ If you want a project-scoped configuration for GitHub publishing, use a `.mcp.js
 Do not commit secrets into `.mcp.json`.
 
 ## Tools exposed by the server
+The Scala handler is named differently from the MCP tool name because they live in two different worlds. The MCP tool name is the public semantic name exposed to Claude as part of the protocol contract. Claude sees names like the following.
+
+```scala
+geocode_city
+get_current_weather
+```
+
+So the underscore acts as a word boundary that helps Claude infer the tool’s meaning. The Scala handler is the private implementation function inside the JAR. The Scala compiler sees names as we chose them for our implementation.
+
+```scala
+geocodeCity
+getCurrentWeather
+```
+
+Claude does not know about `geocodeCity`. It only knows about `geocode_city`. The connection exists only because the `ToolDef` explicitly binds them.
+
+```scala
+ToolDef(
+  name = "geocode_city",
+  description = "Resolve a city or postal-code search string to candidate WGS84 coordinates.",
+  inputSchema = ...,
+  outputSchema = ...,
+  handler = geocodeCity
+)
+```
+
+So the mapping is the following.
+
+```text
+Claude calls MCP tool geocode_city
+Scala dispatcher finds geocode_city in toolsByName
+Scala invokes handler geocodeCity
+```
+
+They are named differently because each name follows the convention of its layer. Scala methods normally use lower camel case, so `geocodeCity` is idiomatic Scala. MCP tool names are JSON protocol names intended for LLMs, clients, logs, schemas, and tool registries, so lowercase snake case is clearer and more portable. In short, `geocodeCity` is for Scala developers; `geocode_city` is for Claude. So geocode_city is just a key in a map. No mystical AI incense involved.
+
+Therefore, the tool name was chosen as `geocode_city` because it is short, precise, and action oriented. It says exactly what the tool does: it geocodes a city. More specifically, it converts a human place name like Chicago into machine usable coordinates like latitude, longitude, and timezone. That matters because the next tool, `get_current_weather`, does not accept a city name. It accepts coordinates. So Claude can infer the following chain.
+
+```text
+User asks for weather in Chicago
+Chicago is a city name
+get_current_weather needs latitude and longitude
+geocode_city can produce latitude and longitude
+Call geocode_city first
+Then call get_current_weather
+```
+
+That is why the tool is not named using some vague words shown below.
+
+```text
+location
+lookup
+api_call
+run
+helper
+method1
+```
+
+Those names are useless to an LLM because they force the model to guess. A good tool name should encode the domain operation directly: `geocode_city` is good because it tells Claude what problem the tool solves and `get_current_weather` is good because it tells Claude that the result is current, not historical and not a forecast.
+
+There is also a design reason to keep the names separate. The MCP tool name is a stable public API. The Scala handler name is an implementation detail. You could refactor the handler from `geocodeCity` to `resolvePlaceName` or move it into another class, and Claude would not care as long as the MCP tool name remains `geocode_city`. That is the right separation. Public semantic contract outside, private implementation inside.
+
+The naming rule is therefore simple.
+
+```text
+Tool name should be optimized for the LLM.
+Handler name should be optimized for Scala code.
+```
+
+For this project, the best pattern is the following.
+
+```text
+MCP tool name
+verb_object or verb_domain_object
+lowercase snake case
+clear to a model and a human reader
+
+Scala handler name
+lower camel case
+idiomatic Scala
+clear to the programmer
+```
+
+Examples include but not limited to the following.
+
+```text
+geocode_city maps to geocodeCity
+get_current_weather maps to getCurrentWeather
+search_flights maps to searchFlights
+rank_trip_options maps to rankTripOptions
+create_booking_hold maps to createBookingHold
+```
+
+To summarize, Claude does not invoke Scala methods, it invokes carefully named semantic tools. Your Scala code decides which method implements each tool. That separation is exactly what makes MCP useful instead of turning the JAR into a haunted house of accidental method calls.
+
 
 ## Tool: geocode_city
 
-Purpose:
+Purpose of this tool.
 
 ```text
 Resolve a city, place name, or postal code into candidate WGS84 coordinates.
 ```
 
-MCP name:
+MCP name is chosen to reflect the function and be readable.
 
 ```text
 geocode_city
 ```
 
-Scala handler:
+Scala handler is the implementation.
 
 ```text
 geocodeCity
 ```
 
-Input arguments:
+Input arguments are listed below.
 
 ```json
 {
@@ -419,7 +513,7 @@ Input arguments:
 }
 ```
 
-Output shape:
+Output shape is specified in the following JSON example.
 
 ```json
 {
@@ -495,7 +589,7 @@ Claude does not know that the Scala method `geocodeCity` exists.
 
 Claude sees only the MCP metadata returned from `tools/list`.
 
-The server advertises tools using this abstraction:
+The server advertises tools using this abstraction.
 
 ```scala
 final case class ToolDef(
@@ -508,7 +602,7 @@ final case class ToolDef(
 )
 ```
 
-The MCP-visible part is:
+The MCP-visible part is
 
 ```text
 name
@@ -518,13 +612,13 @@ inputSchema
 outputSchema
 ```
 
-The Scala-only part is:
+The Scala-only part is
 
 ```text
 handler
 ```
 
-For example:
+Consider the following example.
 
 ```scala
 ToolDef(
@@ -538,20 +632,20 @@ ToolDef(
 )
 ```
 
-Claude sees:
+Claude sees the commands below.
 
 ```text
 geocode_city
 Resolve a city or postal-code search string to candidate WGS84 coordinates.
 ```
 
-The Scala server keeps:
+The Scala server keeps the following mapping.
 
 ```text
 geocode_city -> geocodeCity
 ```
 
-The actual dispatcher is:
+The actual dispatcher is shown below.
 
 ```scala
 toolsByName.get(toolName) match
@@ -559,7 +653,7 @@ toolsByName.get(toolName) match
   case None       => toolError(s"Unknown tool: $toolName")
 ```
 
-So the real mapping is:
+So the real mapping is illustrated below.
 
 ```text
 User query
@@ -582,7 +676,7 @@ get_current_weather requires latitude and longitude
 geocode_city accepts a city string and returns latitude and longitude
 ```
 
-So Claude can infer the plan:
+So Claude can infer the following plan.
 
 ```text
 Call geocode_city with city = Chicago
@@ -593,13 +687,13 @@ Summarize the weather result
 
 ## Code structure
 
-The current implementation is intentionally compact and keeps the protocol logic, tool definitions, and HTTP wrappers in one file:
+The current implementation is intentionally compact and keeps the protocol logic, tool definitions, and HTTP wrappers in one file.
 
 ```text
-src/main/scala/example/OpenMeteoMcpServer.scala
+src/main/scala/OpenMeteoMcpServer.scala
 ```
 
-Main sections:
+Main sections of the implementation are the following.
 
 ```text
 ProtocolVersion
@@ -689,7 +783,7 @@ urlEncode
 
 ## Protocol flow
 
-A typical MCP session looks like this:
+A typical MCP session looks like the following.
 
 ```text
 Claude Desktop starts:
@@ -745,6 +839,280 @@ Server returns:
 
 Claude answers the user.
 ```
+
+To understand the machinery behind the scene, consider the command `initialize`. The MCP server knows how to respond because we explicitly programmed it to recognize the JSON RPC method named `initialize`. There is no automatic discovery and no magic. Claude sends a JSON RPC message that looks roughly like the following.
+
+```json id="fiqf01"
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "initialize",
+  "params": {
+    "protocolVersion": "2025-11-25",
+    "capabilities": {},
+    "clientInfo": {
+      "name": "Claude Desktop",
+      "version": "..."
+    }
+  }
+}
+```
+
+Our Scala server reads that line from stdin.
+
+```scala id="t50qbn"
+for line <- source.getLines() do
+  val trimmed = line.trim
+  if trimmed.nonEmpty then handleLine(trimmed)
+```
+
+Then `handleLine` parses the JSON.
+
+```scala id="7k9mhc"
+val msg = ujson.read(line)
+val obj = msg.obj
+
+val idOpt: Option[Value] = obj.get("id")
+val method: String =
+  obj.get("method").collect { case Str(s) => s }.getOrElse("")
+```
+
+At this point the server has extracted the method information.
+
+```text id="pe1lwz"
+id = 1
+method = initialize
+```
+
+Then the pattern match decides what to do.
+
+```scala id="9aj89k"
+method match
+  case "initialize" =>
+    idOpt.foreach(id => send(response(id, initializeResult(msg))))
+
+  case "notifications/initialized" =>
+    ()
+
+  case "ping" =>
+    idOpt.foreach(id => send(response(id, Obj())))
+
+  case "tools/list" =>
+    idOpt.foreach(id => send(response(id, listToolsResult())))
+
+  case "tools/call" =>
+    idOpt.foreach { id =>
+      val result = callTool(msg)
+      send(response(id, result))
+    }
+
+  case other =>
+    idOpt.foreach(id => send(error(id, -32601, s"Method not found: $other")))
+```
+
+So when Claude sends the command `initialize`
+
+```text id="yxi01a"
+method = initialize
+```
+
+our server runs the following method.
+
+```scala id="p0rmfb"
+initializeResult(msg)
+```
+
+Then the MCP server wraps that result into a JSON RPC response using the same request id.
+
+```scala id="qk3zph"
+response(id, initializeResult(msg))
+```
+
+The wrapper function is the following.
+
+```scala id="r9ord4"
+private def response(id: Value, result: Value): Value =
+  Obj(
+    "jsonrpc" -> "2.0",
+    "id" -> id,
+    "result" -> result
+  )
+```
+
+So if Claude sent id 1, our MCP server answers with id 1. That is how Claude knows which response belongs to which request.
+
+The real content of the initialize answer is built as shown below.
+
+```scala id="sbpzih"
+private def initializeResult(msg: Value): Value =
+  val requested =
+    Try(msg("params")("protocolVersion").str).getOrElse(ProtocolVersion)
+
+  val negotiated =
+    if requested == ProtocolVersion then requested else ProtocolVersion
+
+  Obj(
+    "protocolVersion" -> negotiated,
+    "capabilities" -> Obj(
+      "tools" -> Obj(
+        "listChanged" -> false
+      )
+    ),
+    "serverInfo" -> Obj(
+      "name" -> "openmeteo-scala-mcp",
+      "title" -> "Open-Meteo Scala MCP Server",
+      "version" -> "0.1.0"
+    ),
+    "instructions" ->
+      "Use geocode_city to convert a place name into coordinates, then use get_current_weather."
+  )
+```
+
+Doing so tells Claude four important things. First, the protocol version
+
+```json id="u20fh4"
+"protocolVersion": "2025-11-25"
+```
+
+instructing which MCP protocol version the server claims to support.
+
+Second, the server capabilities
+
+```json id="wwlcsg"
+"capabilities": {
+  "tools": {
+    "listChanged": false
+  }
+}
+```
+
+instructing Claude using the information below.
+
+```text id="ijvtdi"
+This server supports tools.
+The tool list is not expected to change dynamically.
+```
+
+That is why Claude later sends the following tools command.
+
+```text id="qzrrhl"
+tools/list
+```
+
+If the server did not advertise tools, Claude would have no reason to ask for tool definitions.
+
+Third, server identity 
+
+```json id="s2gc7k"
+"serverInfo": {
+  "name": "openmeteo-scala-mcp",
+  "title": "Open-Meteo Scala MCP Server",
+  "version": "0.1.0"
+}
+```
+
+gives Claude and the host application metadata about the server.
+
+Fourth, instructions
+
+```json id="zpdprs"
+"instructions": "Use geocode_city to convert a place name into coordinates, then use get_current_weather."
+```
+
+guide Claude through the intended workflow.
+
+The actual response sent back to Claude looks roughly like the following.
+
+```json id="wmuklw"
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "protocolVersion": "2025-11-25",
+    "capabilities": {
+      "tools": {
+        "listChanged": false
+      }
+    },
+    "serverInfo": {
+      "name": "openmeteo-scala-mcp",
+      "title": "Open-Meteo Scala MCP Server",
+      "version": "0.1.0"
+    },
+    "instructions": "Use geocode_city to convert a place name into coordinates, then use get_current_weather."
+  }
+}
+```
+
+Then `send` writes it to stdout.
+
+```scala id="l4xbda"
+private def send(v: Value): Unit =
+  Console.out.println(ujson.write(v))
+  Console.out.flush()
+```
+
+So the full flow is the following.
+
+```text id="l4ca2s"
+Claude writes initialize JSON to server stdin.
+Scala reads one line from stdin.
+Scala parses it as JSON.
+Scala extracts method = initialize.
+Scala matches case initialize.
+Scala builds initializeResult.
+Scala wraps it in a JSON RPC response with the same id.
+Scala writes the response JSON to stdout.
+Claude reads stdout and continues the MCP session.
+```
+
+The server knows how to respond only because of this explicit case.
+
+```scala id="i6gcd9"
+case "initialize" =>
+  idOpt.foreach(id => send(response(id, initializeResult(msg))))
+```
+
+If you removed that case, Claude would send `initialize`, and your server would fall into the following error response.
+
+```scala id="ngydxw"
+case other =>
+  idOpt.foreach(id => send(error(id, -32601, s"Method not found: $other")))
+```
+
+Then Claude would receive bupkis
+
+```json id="41fpv6"
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "error": {
+    "code": -32601,
+    "message": "Method not found: initialize"
+  }
+}
+```
+
+and the MCP connection would fail.
+
+One important detail: the demo code is lenient about protocol negotiation.
+
+```scala id="dmwzrq"
+val negotiated =
+  if requested == ProtocolVersion then requested else ProtocolVersion
+```
+
+That means if Claude asks for a different protocol version, the server still answers with its own preferred version. It is fine for a demo, but in production, we would be stricter. If the requested version is unsupported, you should return a proper initialization error instead of pretending everything is fine. Otherwise you get the classic distributed systems experience: both sides smile, shake hands, and then quietly betray each other later.
+
+The short answer is shown below.
+
+```text id="sm6uzb"
+Claude sends initialize because MCP requires an initialization handshake.
+Your server knows how to respond because handleLine pattern matches method = initialize.
+initializeResult constructs the capabilities and metadata response.
+send writes the JSON RPC response back to Claude over stdout.
+```
+
 
 ## Why stdout and stderr matter
 
@@ -940,9 +1308,7 @@ tool B expects fields hidden somewhere inside the blob
 
 ## Security model
 
-This project exposes only read-only tools.
-
-The server does not expose arbitrary Scala methods. Claude can call only tools advertised by `tools/list`.
+This project exposes only read-only tools. The MCP server does not expose arbitrary Scala methods. Claude can call only tools advertised by `tools/list`.
 
 Callable surface:
 
@@ -959,7 +1325,7 @@ classes in dependencies
 JVM internals
 ```
 
-Security recommendations before adding write operations:
+Security recommendations before adding write operations are the following.
 
 ```text
 Validate every input argument.
@@ -978,7 +1344,7 @@ Add OpenTelemetry tracing for production use.
 
 ## Extending the server
 
-To add a new Open-Meteo tool:
+To add a new Open-Meteo tool follow the template below.
 
 1. Create a Scala handler function.
 
@@ -1027,7 +1393,7 @@ private lazy val tools: Seq[ToolDef] =
   Seq(geocodeCityTool, currentWeatherTool, hourlyForecastTool)
 ```
 
-Rebuild:
+Rebuild the project.
 
 ```bash
 sbt clean assembly
@@ -1037,9 +1403,7 @@ Restart Claude Desktop.
 
 ## From hand-written wrapper to generator
 
-This project is a hand-written MCP adapter. The same pattern can be generated from an external web service description.
-
-Mapping:
+This project is a hand-written MCP adapter. The same pattern can be generated from an external web service description. Mapping is straightforward.
 
 ```text
 OpenAPI operationId
@@ -1061,7 +1425,7 @@ HTTP error
   -> MCP tool result with isError = true
 ```
 
-For production use, add a semantic annotation layer. OpenAPI tells you field syntax. It often does not tell you enough semantics.
+For production use, add a semantic annotation layer. OpenAPI tells you field syntax but often does not tell you enough semantics.
 
 Example:
 
@@ -1127,13 +1491,9 @@ Add support for forecast, historical weather, and air quality tools.
 
 # How the OpenMeteo MCP Server Works
 
-This document explains how the OpenMeteo MCP server works internally. It is written as a standalone Markdown file that can be copied into a README, linked as a separate documentation page, or published as CODE_WALKTHROUGH.md.
+This document explains how the OpenMeteo MCP server works internally. Claude Desktop or Claude Code starts the compiled JAR as a subprocess. The server does not expose an HTTP port and it communicates with Claude through standard input and standard output using JSON RPC messages as described above.
 
-The project is a local Model Context Protocol server implemented in Scala 3. Claude Desktop or Claude Code starts the compiled JAR as a subprocess. The server does not expose an HTTP port. It communicates with Claude through standard input and standard output using JSON RPC messages.
-
-The most important design point is simple. Claude does not inspect the JAR. Claude does not scan Scala classes. Claude does not know that Scala methods such as geocodeCity or getCurrentWeather exist. Claude only knows about tools that the server advertises through the MCP tools/list response.
-
-The Scala code is therefore an adapter between two worlds.
+The most important design point is that Claude does not inspect the JAR and Claude does not scan Scala classes. Claude does not know that Scala methods such as geocodeCity or getCurrentWeather exist. Claude only knows about tools that the server advertises through the MCP tools/list response. The Scala code is therefore an adapter between two worlds.
 
 ```text
 MCP world
@@ -1188,13 +1548,11 @@ Scala 3 MCP server
 Open Meteo API
 ```
 
-Claude performs semantic planning. The Scala server performs protocol handling, validation, dispatch, HTTP calls, and result normalization. Open Meteo provides the geocoding and weather data.
+Claude performs semantic planning whereas the Scala server performs protocol handling, validation, dispatch, HTTP calls, and result normalization. Open Meteo provides the geocoding and weather data.
 
 ## The central idea
 
-The server exposes tools, not Scala methods.
-
-For example, Claude sees this MCP tool name.
+The server exposes tools, not Scala methods. For example, Claude sees this MCP tool name.
 
 ```text
 geocode_city
@@ -1218,9 +1576,7 @@ The Scala server internally maps that tool to this Scala handler.
 getCurrentWeather
 ```
 
-The mapping is explicit. It is not discovered from bytecode, reflection, or class names.
-
-The key runtime chain is shown below.
+The mapping is explicit, it is not discovered from bytecode, reflection, or class names. The key runtime chain is shown below.
 
 ```text
 User query
@@ -1255,9 +1611,7 @@ final case class ToolDef(
     )
 ```
 
-A ToolDef has two parts.
-
-The first part is visible to Claude.
+A ToolDef has two parts. The first part is visible to Claude.
 
 ```text
 name
@@ -1275,9 +1629,7 @@ handler
 
 The name, title, description, input schema, and output schema are sent to Claude when Claude asks for the list of tools. These fields tell Claude what the tool does, what arguments it expects, and what kind of result it returns.
 
-The handler is a Scala function. It is not sent to Claude. It is the function that the server executes after Claude invokes a tool.
-
-This means Claude sees something like the following description.
+The handler is a Scala function. It is not sent to Claude. It is the function that the server executes after Claude invokes a tool. This means Claude sees something like the following description.
 
 ```text
 Tool name: geocode_city
@@ -1296,9 +1648,7 @@ That mapping is created by assigning the handler field.
 
 ## How geocode_city is defined
 
-The geocode_city tool converts a city name or postal code into candidate geographic locations.
-
-A simplified version of the tool definition is shown below.
+The geocode_city tool converts a city name or postal code into candidate geographic locations. A simplified version of the tool definition is shown below.
 
 ```scala
 private lazy val geocodeCityTool: ToolDef =
@@ -1336,25 +1686,19 @@ The important MCP name is shown below.
 geocode_city
 ```
 
-This is what Claude calls.
-
-The important Scala function is shown below.
+Claude calls the Scala function shown below.
 
 ```text
 geocodeCity
 ```
 
-This is the internal Scala function that actually performs the work.
-
-Claude never directly calls geocodeCity. Claude calls geocode_city. The server receives the MCP tool call, looks up geocode_city in its tool table, finds the handler, and executes geocodeCity.
+This is the internal Scala function that actually performs the work. Claude never directly calls geocodeCity. Claude calls geocode_city. The server receives the MCP tool call, looks up geocode_city in its tool table, finds the handler, and executes geocodeCity.
 
 The input schema tells Claude that the tool accepts a required city argument and an optional count argument. The descriptions help Claude map words from the user request to tool arguments. If the user asks for weather in Chicago, Claude can infer that Chicago belongs in the city field.
 
 ## How get_current_weather is defined
 
-The get_current_weather tool receives latitude and longitude and returns current weather information.
-
-A simplified version of the tool definition is shown below.
+The get_current_weather tool receives latitude and longitude and returns current weather information. A simplified version of the tool definition is shown below.
 
 ```scala
 private lazy val currentWeatherTool: ToolDef =
@@ -1392,9 +1736,7 @@ private lazy val currentWeatherTool: ToolDef =
   )
 ```
 
-This tool has a different semantic role. It does not know how to resolve city names. It expects coordinates.
-
-That separation is intentional. The server exposes two small domain operations.
+This tool has a different semantic role: it does not know how to resolve city names and it expects coordinates. That separation is intentional. The server exposes two small domain operations.
 
 ```text
 geocode_city
@@ -1404,9 +1746,7 @@ get_current_weather
   converts coordinates into weather data
 ```
 
-Claude composes them. The Scala server executes them.
-
-For example, when the user asks for the weather in Chicago, Claude can infer the following plan.
+Claude composes them. The Scala server executes them. For example, when the user asks for the weather in Chicago, Claude can infer the following plan.
 
 ```text
 Call geocode_city with city = Chicago.
@@ -1426,9 +1766,7 @@ private lazy val tools: Seq[ToolDef] =
   Seq(geocodeCityTool, currentWeatherTool)
 ```
 
-This sequence is the complete list of callable tools. If a function is not reachable from this list, Claude cannot call it.
-
-The server also creates a map from tool names to tool definitions.
+This sequence is the complete list of callable tools. If a function is not reachable from this list, Claude cannot call it. The MCP server also creates a map from tool names to tool definitions.
 
 ```scala
 private lazy val toolsByName: Map[String, ToolDef] =
@@ -1470,9 +1808,7 @@ def main(args: Array[String]): Unit =
       Console.err.println(s"server loop failed: ${e.getMessage}")
 ```
 
-This loop reads from standard input. Each nonempty line is treated as one JSON RPC message.
-
-The server must not write normal logs to standard output. Standard output is reserved for JSON RPC responses. Logs are written to standard error.
+This loop reads from standard input. Each nonempty line is treated as one JSON RPC message. The server must not write normal logs to standard output. Standard output is reserved for JSON RPC responses. Logs are written to standard error.
 
 This is correct.
 
@@ -1486,9 +1822,7 @@ This is wrong.
 Console.out.println("server started")
 ```
 
-If the server writes random text to standard output, Claude may treat that text as protocol data. Then the MCP connection can fail before the tools are discovered.
-
-The loop is intentionally simple.
+If the server writes random text to standard output, Claude may treat that text as protocol data. Then the MCP connection can fail before the tools are discovered. The loop is intentionally simple.
 
 ```text
 read a line
@@ -1540,9 +1874,7 @@ private def handleLine(line: String): Unit =
       Console.err.println(s"bad request: ${e.getMessage}")
 ```
 
-The dispatch is based on the JSON RPC method field.
-
-The server handles these MCP methods.
+The dispatch is based on the JSON RPC method field. The server handles these MCP methods.
 
 ```text
 initialize
@@ -1552,9 +1884,7 @@ tools/list
 tools/call
 ```
 
-The initialize method performs protocol setup. The tools/list method returns the tool catalog. The tools/call method invokes a specific tool.
-
-The notifications/initialized message does not have an id and does not require a response. This is why the server ignores it.
+The initialize method performs protocol setup. The tools/list method returns the tool catalog. The tools/call method invokes a specific tool. The notifications/initialized message does not have an id and does not require a response. This is why the server ignores it.
 
 ## Initialization
 
@@ -1587,22 +1917,18 @@ private def initializeResult(msg: Value): Value =
   )
 ```
 
-The capabilities section tells Claude that this server supports tools.
-
-The instructions field is also important. It tells Claude the intended sequence of operations.
+The capabilities section tells Claude that this server supports tools. The instructions field is also important, since it tells Claude the intended sequence of operations.
 
 ```text
 Use geocode_city first when the user supplies a place name.
 Then use get_current_weather with the returned coordinates.
 ```
 
-Claude can often infer this sequence from schemas alone, but the instruction makes the intended flow explicit. That improves reliability.
+Claude can often infer this sequence from schemas alone, but the instruction makes the intended flow explicit to improve reliability.
 
 ## Tool discovery with tools/list
 
-After initialization, Claude asks the server which tools are available.
-
-The server answers through listToolsResult.
+After initialization, Claude asks the server which tools are available. The MCP server answers through listToolsResult.
 
 ```scala
 private def listToolsResult(): Value =
@@ -1611,11 +1937,7 @@ private def listToolsResult(): Value =
   )
 ```
 
-This function converts every ToolDef into its MCP visible JSON representation. The handler field is not included.
-
-This is deliberate. Claude receives the documentation for the tools, not the Scala function values.
-
-The tools/list response lets Claude see the following information.
+This function converts every ToolDef into its MCP visible JSON representation. The handler field is not included. This is deliberate. Claude receives the documentation for the tools, not the Scala function values. The tools/list response lets Claude see the following information.
 
 ```text
 tool name
@@ -1629,9 +1951,7 @@ From this information, Claude builds its internal tool registry. When the user a
 
 ## Tool invocation with tools/call
 
-When Claude decides to invoke a tool, it sends a tools/call message.
-
-A call to geocode_city looks like the example shown below.
+When Claude decides to invoke a tool, it sends a tools/call message. A call to geocode_city looks like the example shown below.
 
 ```json
 {
@@ -1680,11 +2000,7 @@ Look up the tool name in toolsByName.
 Execute the matching Scala handler.
 ```
 
-For geocode_city, the lookup returns geocodeCityTool, whose handler is geocodeCity.
-
-For get_current_weather, the lookup returns currentWeatherTool, whose handler is getCurrentWeather.
-
-This line is the actual bridge from MCP into Scala execution.
+For geocode_city, the lookup returns geocodeCityTool, whose handler is geocodeCity. For get_current_weather, the lookup returns currentWeatherTool, whose handler is getCurrentWeather. This line is the actual bridge from MCP into Scala execution.
 
 ```scala
 case Some(tool) => tool.handler(args)
@@ -1692,9 +2008,7 @@ case Some(tool) => tool.handler(args)
 
 ## How geocodeCity works
 
-The geocodeCity function validates the city argument, builds a URL for Open Meteo’s geocoding endpoint, performs the HTTP request, extracts the result list, and returns a normalized structured result.
-
-The function begins by requiring a city argument.
+The geocodeCity function validates the city argument, builds a URL for Open Meteo’s geocoding endpoint, performs the HTTP request, extracts the result list, and returns a normalized structured result. The function begins by requiring a city argument.
 
 ```scala
 requiredString(args, "city") match
@@ -1705,18 +2019,14 @@ requiredString(args, "city") match
     ...
 ```
 
-If city is missing or empty, the tool returns an MCP error result. If city is present, the function continues.
-
-The optional count argument is read next.
+If city is missing or empty, the tool returns an MCP error result. If city is present, the function continues. The optional count argument is read next.
 
 ```scala
 val count =
   math.max(1, math.min(optionalInt(args, "count", 5), 10))
 ```
 
-This clamps count to the range from 1 to 10. That prevents accidental huge requests and keeps the tool result manageable.
-
-The URL is built from the city and count.
+This clamps count to the range from 1 to 10. That prevents accidental huge requests and keeps the tool result manageable. The URL is built from the city and count.
 
 ```scala
 val url =
@@ -1727,9 +2037,7 @@ val url =
     "&format=json"
 ```
 
-The urlEncode function is used because city names can contain spaces and other characters that must be escaped in a query parameter.
-
-The HTTP request is performed by httpGetJson.
+The urlEncode function is used because city names can contain spaces and other characters that must be escaped in a query parameter. The HTTP request is performed by httpGetJson.
 
 ```scala
 httpGetJson(url) match
@@ -1772,9 +2080,7 @@ The result contains only the fields Claude needs for the next step. This is bett
 
 ## How getCurrentWeather works
 
-The getCurrentWeather function validates latitude and longitude, builds a forecast URL, calls Open Meteo, extracts current weather fields, and returns a normalized structured result.
-
-It starts by reading numeric arguments.
+The getCurrentWeather function validates latitude and longitude, builds a forecast URL, calls Open Meteo, extracts current weather fields, and returns a normalized structured result. It starts by reading numeric arguments.
 
 ```scala
 val latEither = requiredDouble(args, "latitude")
@@ -1806,9 +2112,7 @@ else
   ...
 ```
 
-This prevents invalid coordinates from being sent to the upstream API.
-
-The timezone argument is optional.
+This prevents invalid coordinates from being sent to the upstream API. The timezone argument is optional.
 
 ```scala
 val timezone =
@@ -1894,9 +2198,7 @@ private def httpGetJson(url: String): Either[String, Value] =
       Left(s"Upstream call failed: ${e.getMessage}")
 ```
 
-This function hides the low level HTTP details from each tool handler.
-
-It performs these tasks.
+This function hides the low level HTTP details from each tool handler and performs these tasks.
 
 ```text
 Create an HTTP GET request.
@@ -1923,9 +2225,7 @@ The tool handlers convert Left values into MCP tool errors and Right values into
 
 ## Tool success and tool error results
 
-MCP tool calls return structured results to Claude. This server uses two helper functions.
-
-The success helper is shown below.
+MCP tool calls return structured results to Claude. This server uses two helper functions. The success helper is shown below.
 
 ```scala
 private def toolSuccess(structured: Value): Value =
@@ -1941,13 +2241,9 @@ private def toolSuccess(structured: Value): Value =
   )
 ```
 
-The structured result is returned twice.
+The structured result is returned twice. The content field gives Claude a text representation. The structuredContent field gives Claude a JSON object it can use for later tool calls.
 
-The content field gives Claude a text representation. The structuredContent field gives Claude a JSON object it can use for later tool calls.
-
-This matters for chaining. The geocoding tool returns structuredContent containing latitude and longitude. Claude can reuse those fields when calling get_current_weather.
-
-The error helper is shown below.
+This matters for chaining. The geocoding tool returns structuredContent containing latitude and longitude. Claude can reuse those fields when calling get_current_weather. The error helper is shown below.
 
 ```scala
 private def toolError(message: String): Value =
@@ -1962,9 +2258,7 @@ private def toolError(message: String): Value =
   )
 ```
 
-The isError field tells Claude that the tool failed. The message should be specific enough for Claude to repair the call.
-
-A good error message is shown below.
+The isError field tells Claude that the tool failed. The message should be specific enough for Claude to repair the call. A good error message is shown below.
 
 ```text
 Missing required numeric argument: latitude.
@@ -2014,9 +2308,7 @@ private def requiredDouble(args: Obj, field: String): Either[String, Double] =
       Left(s"Missing required numeric argument: $field.")
 ```
 
-These helpers make the handlers smaller and keep validation behavior consistent.
-
-The server performs validation even though the tools declare input schemas. This is important. The schema helps Claude generate correct arguments, but the server must still enforce correctness at runtime. Never trust the model to validate itself. That is not engineering. That is optimism in a lab coat.
+These helpers make the handlers smaller and keep validation behavior consistent. The server performs validation even though the tools declare input schemas. This is important. The schema helps Claude generate correct arguments, but the server must still enforce correctness at runtime. Never trust the model to validate itself.
 
 ## JSON extraction helpers
 
@@ -2065,9 +2357,7 @@ private def locationSummary(v: Value): Value =
   )
 ```
 
-This function is important because upstream API responses often contain more data than the model needs. Returning too much data wastes context and increases confusion.
-
-The normalized output focuses on the fields needed for tool chaining and user response generation.
+This function is important because upstream API responses often contain more data than the model needs. Returning too much data wastes context and increases confusion. The normalized output focuses on the fields needed for tool chaining and user response generation.
 
 ```text
 name
@@ -2096,9 +2386,7 @@ The second tool consumes coordinates.
 get_current_weather(latitude, longitude, timezone) -> current weather
 ```
 
-Claude sees this through tool descriptions and schemas. It can therefore construct a tool chain.
-
-For a user request such as this.
+Claude sees this through tool descriptions and schemas. It can therefore construct a tool chain. A user requests through the LLM prompt.
 
 ```text
 What is the current weather in Chicago?
@@ -2116,7 +2404,7 @@ Call get_current_weather.
 Summarize the result.
 ```
 
-This is why the output schema of one tool and the input schema of another tool should align whenever possible.
+This is why the output schema of one tool and the input schema of another tool should align whenever possible. 
 
 Good tool chaining looks like this.
 
@@ -2139,9 +2427,7 @@ The model might still figure it out, but now it is guessing. In production syste
 
 ## What happens when Claude chooses the wrong tool
 
-Claude can make mistakes. The server must handle them.
-
-If Claude calls an unknown tool, the dispatcher returns an error.
+Claude can make mistakes. The server must handle them. If Claude calls an unknown tool, the dispatcher returns an error.
 
 ```scala
 case None => toolError(s"Unknown tool: $toolName")
@@ -2159,15 +2445,11 @@ If Claude passes an invalid latitude, the handler returns an error.
 latitude must be between -90 and 90.
 ```
 
-The goal is not to pretend the model will always call tools correctly. The goal is to make failures safe, explicit, and recoverable.
-
-A good MCP server should reject invalid calls cleanly and provide enough information for the LLM to retry correctly.
+The goal is not to pretend the model will always call tools correctly. The goal is to make failures safe, explicit, and recoverable. A good MCP server should reject invalid calls cleanly and provide enough information for the LLM to retry correctly.
 
 ## Why tool names and descriptions matter
 
-Claude chooses tools based on the semantic surface exposed by the server.
-
-The semantic surface includes the following fields.
+Claude chooses tools based on the semantic surface exposed by the server. The semantic surface includes the following fields.
 
 ```text
 tool name
@@ -2221,17 +2503,13 @@ The LLM is not reading your mind. It is reading your metadata. If the metadata i
 
 ## Security boundary
 
-The JAR may contain many Scala methods, but Claude can invoke only advertised MCP tools.
-
-The callable surface is shown below.
+The JAR may contain many Scala methods, but Claude can invoke only advertised MCP tools. The callable surface is shown below.
 
 ```scala
 tools.map(_.name)
 ```
 
-If a Scala function is not connected to a ToolDef in the tools list, Claude has no MCP path to invoke it.
-
-This function is not callable unless explicitly exposed.
+If a Scala function is not connected to a ToolDef in the tools list, Claude has no MCP path to invoke it. This function is not callable unless explicitly exposed.
 
 ```scala
 private def someInternalFunction(args: Obj): Value =
@@ -2253,9 +2531,7 @@ ToolDef(
 
 This boundary is important. MCP gives the model a controlled action surface. It should not expose arbitrary program internals.
 
-For read-only tools, this pattern is usually manageable. For tools that modify data, send email, create orders, issue refunds, delete records, or perform financial actions, the server should add stronger protections.
-
-Recommended protections are shown below.
+For read-only tools, this pattern is usually manageable. For tools that modify data, send email, create orders, issue refunds, delete records, or perform financial actions, the server should add stronger protections. Recommended protections are shown below.
 
 ```text
 input validation
@@ -2271,11 +2547,7 @@ structured output validation
 
 ## Why this project is useful
 
-This project is small, but it captures the essential pattern for LLM-driven microservice composition.
-
-A web API becomes useful to an LLM only after it is transformed into named, described, typed tools. MCP provides the protocol. Scala provides the executable adapter. Open Meteo provides the external data.
-
-The resulting system has a clean separation of responsibilities.
+This project is small, but it captures the essential pattern for LLM-driven microservice composition. A web API becomes useful to an LLM only after it is transformed into named, described, typed tools. MCP provides the protocol. Scala provides the executable adapter. Open Meteo provides the external data. The resulting system has a clean separation of responsibilities.
 
 ```text
 Claude
@@ -2336,8 +2608,6 @@ Open-Meteo
   Data license: CC BY 4.0, subject to Open-Meteo terms.
   Website: https://open-meteo.com/
 ```
-
-Suggested attribution line for README, UI, or documentation:
 
 ```text
 Weather data and geocoding data are provided by Open-Meteo.com and are subject to the Open-Meteo terms and CC BY 4.0 data license.
