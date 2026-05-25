@@ -51,7 +51,7 @@ import java.nio.charset.StandardCharsets
 import java.util.concurrent.{LinkedBlockingQueue, TimeUnit}
 import scala.util.control.NonFatal
 
-final class OpenMeteoMcpServerSpec extends AnyFunSuite with Matchers:
+final class OpenMeteoMCPServerSpec extends AnyFunSuite with Matchers:
 
   private final class McpServerProcess private (
                                                  process: Process,
