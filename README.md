@@ -19,14 +19,12 @@ The project demonstrates how an external web microservice can be wrapped as a ty
 
 ## External service
 
-This project uses Open-Meteo.
-
-Open-Meteo provides weather APIs over HTTP GET with JSON responses. The example server uses:
+This project uses [Open-Meteo](https://open-meteo.com/). Open-Meteo provides weather APIs over HTTP GET with JSON responses. The example server uses the following components.
 
 - Open-Meteo Geocoding API
 - Open-Meteo Forecast API with current weather variables
 
-The default implementation exposes two tools:
+The default implementation exposes two tools.
 
 - `geocode_city`
 - `get_current_weather`
@@ -43,12 +41,7 @@ Useful links:
 
 ## MCP background
 
-MCP stands for Model Context Protocol.
-
-An MCP server exposes capabilities to an MCP client. For this project, the important capability is `tools`.
-
-The MCP flow is:
-
+Model Context Protocol (MCP) server exposes capabilities to an MCP client. For this project, the important capability is `tools`. The MCP flow is the following.
 ```text
 Claude Desktop or Claude Code
   starts the JAR as a subprocess
@@ -64,7 +57,7 @@ Scala MCP server
   returns structured MCP tool results
 ```
 
-The server is local and uses stdio transport. It is not an HTTP server and does not listen on a port.
+The MCP server is local and uses stdio transport. It is **not** an HTTP server and does not listen on a port.
 
 ## Architecture
 
